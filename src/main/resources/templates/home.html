@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>タスク管理アプリケーション</title>
+	<meta charset="UTF-8">
+	<title>タスク管理アプリケーション</title>
+	<link th:href="@{/home.css}" rel="stylesheet">
 </head>
 <body>
 	<h1>タスク管理アプリケーション</h1>
@@ -16,7 +17,7 @@
 			<input type="submit" value="登録"/>
 		</form>
 	</div>
-	<div>
+	<div class="tasklist">
 		<h2>
 		<table border="1" style="border-collapse:collapse;">
 			<thead>
