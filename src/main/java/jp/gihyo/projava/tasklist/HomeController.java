@@ -1,7 +1,6 @@
 package jp.gihyo.projava.tasklist;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,8 +13,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class HomeController {
+	private final TaskListDao dao;
 	record TaskItem(String id, String task, String deadline, boolean done) {}
-	private List<TaskItem> taskList = new ArrayList<TaskItem>();
+	//private List<TaskItem> taskList = new ArrayList<TaskItem>();
+	
+	public HomeController(TaskListDao dao) {
+		//コンストラクタインジェクションにより、適切に初期化されたTaskListDaoをセット
+		this.dao = dao;
+	}
 	
 	@RequestMapping(value = "/hellohtml")
 	@ResponseBody
@@ -40,7 +45,8 @@ public class HomeController {
 	}
 	
 	@GetMapping("/list")
-	String  list(Model model) {
+	String  listItems(Model model) {
+		List<TaskItem> taskList = dao.findAll();
 		model.addAttribute("taskList", taskList);
 		return "home";
 	}
@@ -49,8 +55,14 @@ public class HomeController {
 	String addTask(@RequestParam("task")  String task,  @RequestParam("deadline") String deadline) {
 		String id = UUID.randomUUID().toString().substring(0, 8);
 		TaskItem item = new TaskItem(id, task, deadline, false);
-		taskList.add(item);
+		dao.add(item);
 		
+		return "redirect:/list";
+	}
+	
+	@GetMapping("/delete")
+	String deleteItem(@RequestParam("id") String id) {
+		dao.delete(id);
 		return "redirect:/list";
 	}
 }
